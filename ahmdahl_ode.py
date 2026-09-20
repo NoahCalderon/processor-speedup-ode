@@ -6,12 +6,19 @@ second solve, and graph result. Model source: Project1_Notes, slide 7
 count is continous for calculus, with results shown as whole counts. 
 """
 
+
+""" IMPORTS
+    ast is used to safey parse user-entered expressions
+    numpy  is used for arrays and numerical operations
+    matplotlib.pyplot allows us to plot the speeduop curve
+    solve_ivp from SciPy is a numerical ODE solver
+    """
 import ast
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
-#Check that equation entered contains only arithmetic and our variables
+#Check that equation entered contains only arithmetic and our variables. Reject unrecognized variable names, non-numeric constraints, and/or python constructs outside basic arithmetic.
 def read_equation(text):
     tree = ast.parse(text, mode='eval')
 
@@ -35,7 +42,8 @@ def read_equation(text):
                 raise ValueError('Constants must be numbers.')
 
     return compile(tree, '<equation>', 'eval')
-        
+
+#Main Program
 def main():
     print('Processor Speedup ODE')
     print('N = processors, S = speedup, f = parallel fraction')
@@ -51,7 +59,7 @@ def main():
     if not 0 <= f <= 1 or not 2 <= maximum <= 1000:
         raise ValueError('Use a fraction from 0 to 1 and 2 to 1000 processors.')
 
-    # Calculate the slope for SciPy.
+    # Calculate the slope for SciPy. ODE Definition.
     def ode(N, S):
         variables = {'N': N, 'S': S[0], 'f': f}
         return [eval(formula, {'__builtins__': {}}, variables)]
@@ -68,7 +76,8 @@ def main():
         ode, (1, maximum), [1.0],
         t_eval=counts, rtol=1e-10, atol=1e-12
     )
-
+    
+    #The program raises ValueError and displays message to user if either solve reports failure
     if not solution.success or not reference.success:
         raise ValueError('Solver failed. Check the equation for undefined values.')
             
@@ -85,7 +94,8 @@ def main():
     if equation.replace(' ', '') == default.replace(' ', ''):
         exact = 1/(1 - f + f / counts)
         print(f'Maximum error against Amdahl formula: {max(abs(speedup-exact)):.2e}')
-                    
+
+    # Plot the computed speedup curve against processor count.
     plt.plot(counts, speedup, 'o-', label=f'Parallel fraction = {f:.0%}')
     plt.title('Processor Speedup: Numerical ODE Solution')
     plt.xlabel('Number of processors')
