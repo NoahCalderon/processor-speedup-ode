@@ -1,6 +1,6 @@
 """
 CST-305 Project 1: Processor Speedup ODE 
-Programmed by Noah Calderon-Zuniga & Reviewed by Pisa Ripley
+Programmed and reviewed by Noah Calderon-Zuniga & Pisa Ripley
 Packages: NumPy, SciPy, Matplotlib; Pythons built-in ast module   
 second solve, and graph result. Model source: Project1_Notes, slide 7 
 count is continous for calculus, with results shown as whole counts. 
